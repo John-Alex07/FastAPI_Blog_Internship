@@ -6,8 +6,8 @@ from app.api.authentication import database
 from app.models.blog import Blog
 
 # Get current user
-def get_current_user(data: str = Depends(OAuth2PasswordBearer(tokenUrl="token"))):
-    user = database["Blogs"].find_one({"username": data})
+async def get_current_user(data: str = Depends(OAuth2PasswordBearer(tokenUrl="token"))):
+    user = await database["Blogs"].find_one({"name": data})
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
