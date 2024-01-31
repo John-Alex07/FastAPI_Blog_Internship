@@ -4,7 +4,6 @@ from jose import jwt
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 from app.utils import get_current_user, get_database
 from ..models import blog
-from app.utils import get_database
 from dotenv import load_dotenv
 import os
 from datetime import datetime, timedelta
@@ -18,9 +17,6 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 
-database = get_database()
-users_collection = database.get_collection("Blogs")
-
 # Function to create JWT token
 def create_jwt_token(data: dict):
     to_encode = data.copy()
@@ -31,6 +27,8 @@ def create_jwt_token(data: dict):
 
 # Function to get user from MongoDB by username
 async def get_user(username: str):
+    database = get_database()
+    users_collection = database.get_collection("Blogs")
     user_data = await users_collection.find_one({"name": username})
     if user_data:
         return blog.User(**user_data)
